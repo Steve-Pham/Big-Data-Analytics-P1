@@ -24,8 +24,9 @@ public class APriori {
         String currentLine = "";
         FileReader retail = null;
         BufferedReader reader = null;
-
+        System.out.println(new File(this.fileName).getAbsolutePath() + this.fileName);
         try {
+
             retail = new FileReader(this.fileName);
             reader = new BufferedReader(retail);
         }
@@ -37,11 +38,23 @@ public class APriori {
             while ((currentLine = reader.readLine()) != null) {
                 line = currentLine.split("\\s+");
                 for (String s: line) {
-                    System.out.println(s);
+                    Integer key = Integer.parseInt(s);
+                    if (count.containsKey(key)) {
+                        count.put(key, count.get(key) + 1);
+                    } else {
+                        count.put(key, 1);
+                    }
                 }
             }
         } catch(IOException e) {
             e.printStackTrace();
         }
+        /*
+        for (Integer key: count.keySet()) {
+            System.out.println(key + " " + count.get(key));
+        }
+
+         */
+
     }
 }
