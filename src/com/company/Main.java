@@ -7,7 +7,7 @@ public class Main {
         //System.out.println("Hello World");
         APriori test = new APriori("retail.txt");
         test.secondPass();
-        PCY test1 = new PCY("retail.txt");
-        test1.secondPass();
+        PCY test2 = new PCY("retail.txt");
+        test2.secondPass();
     }
 }
