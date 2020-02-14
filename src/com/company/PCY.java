@@ -15,14 +15,21 @@ public class PCY {
     private HashMap<Integer, Integer> buckets;//hashtable to store bucket values
     final int bucketSize = 88200; //defines bucket size
     private BitSet bitBucket;
+    private int dataSet;
+    private int max;
+    private double thres;
 
     //initialize with data file
-    public PCY (String fileName) {
+    public PCY (String fileName, int dataSet, double threshold) {
         this.fileName = fileName;
-        this.threshold = 881;
+        this.dataSet = dataSet;
+        this.max = 0;
+        this.thres = threshold;
+        this.threshold = (int) (dataSet*threshold);
         this.count_items = new HashMap<Integer, Integer>();
         this.frequentPairs = new HashMap<String, Integer>();
         this.buckets = new HashMap<Integer, Integer>();
+        this.max = 0;
     }
 
     //setup threshold
@@ -32,6 +39,8 @@ public class PCY {
 
     //second pass of pcy
     public void secondPass() {
+        long startTime = System.nanoTime();
+        System.out.println("Threshold: " + this.thres + ", DataSet: " + this.dataSet);
         this.firstPass();
 
         String []line;
@@ -49,9 +58,9 @@ public class PCY {
         }
 
         try {
-            while ((currentLine = reader.readLine()) != null) {
+            while (((currentLine = reader.readLine()) != null) && this.max <= this.dataSet) {
+                this.incrementMax();
                 line = currentLine.split("\\s+");
-
                 for (String s: line) {//goes through array of individual string for each line
                     Integer key = Integer.parseInt(s);//changes to integer
                     if (!currentKeys.contains(key) && this.count_items.containsKey(key)) {
@@ -96,6 +105,11 @@ public class PCY {
         }
         this.findFrequentPairs();
         System.out.println(this.frequentPairs.size());
+        long endTime = System.nanoTime();
+
+        long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+        System.out.println("PCY: " + duration/1000000);
+        this.resetMax();
     }
 
     //function to read all instances of each item as well as the frequent pairs and assign to buckets
@@ -104,7 +118,7 @@ public class PCY {
         String currentLine = "";
         FileReader retail = null;
         BufferedReader reader = null;
-        System.out.println(new File(this.fileName).getAbsolutePath() + this.fileName);//outputs path to data file
+        //System.out.println(new File(this.fileName).getAbsolutePath() + this.fileName);//outputs path to data file
         ArrayList<Integer> currentKeys = new ArrayList<Integer>();
 
         try {
@@ -116,7 +130,8 @@ public class PCY {
         }
 
         try {
-            while ((currentLine = reader.readLine()) != null) {
+            while (((currentLine = reader.readLine()) != null) && this.max <= this.dataSet) {
+                this.incrementMax();
                 line = currentLine.split("\\s+");
 
                 for (String s: line) {//goes through array of individual string for each line
@@ -167,6 +182,7 @@ public class PCY {
 
         this.findFrequentValues();//seperates frequent items from the rest
         System.out.println(this.count_items.size());//outputs number of items that appear >= threshold
+        this.resetMax();
 
     }
 
@@ -204,6 +220,14 @@ public class PCY {
             }
         }
         return temp;
+    }
+
+    public void resetMax() {
+        this.max = 0;
+    }
+
+    public void incrementMax() {
+        this.max++;
     }
 
 

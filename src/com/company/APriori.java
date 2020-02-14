@@ -9,10 +9,16 @@ public class APriori {
     private String fileName;
     private HashMap<Integer, Integer> count;
     private HashMap<String, Integer> frequentPairs;
+    private int dataSet;
+    private int max;
+    private double thres;
 
-    public APriori(String fileName) {
+    public APriori(String fileName, int dataSet, double threshold) {
         this.fileName = fileName;
-        this.threshold = 881;
+        this.dataSet = dataSet;
+        this.thres = threshold;
+        this.max = 0;
+        this.threshold = (int) (dataSet*threshold);
         this.count = new HashMap<Integer, Integer>();
         this.frequentPairs = new HashMap<String, Integer>();
     }
@@ -22,6 +28,8 @@ public class APriori {
     }
 
     public void secondPass() {
+        long startTime = System.nanoTime();
+        System.out.println("Threshold: " + this.thres + ", DataSet: " + this.dataSet);
         this.firstPass();
         String []line;
         String currentLine = "";
@@ -37,7 +45,8 @@ public class APriori {
         }
 
         try {
-            while((currentLine = reader.readLine()) != null) {
+            while(((currentLine = reader.readLine()) != null) && this.max <= this.dataSet) {
+                this.incrementMax();
                 line = currentLine.split("\\s+");
                 for (String s: line) {
                     int key = Integer.parseInt(s);
@@ -75,7 +84,27 @@ public class APriori {
         }
         this.findFrequentPairs();
         System.out.println(this.frequentPairs.size());
+        this.resetMax();
+        long endTime = System.nanoTime();
 
+        long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+        System.out.println("APriori: " + duration/1000000);
+
+    }
+
+    public void printPairs() {
+        System.out.println("Threshold: " + this.threshold);
+        for (String s: this.frequentPairs.keySet()) {
+            System.out.println(s + " " + this.frequentPairs.get(s));
+        }
+    }
+
+    public void resetMax() {
+        this.max = 0;
+    }
+
+    public void incrementMax() {
+        this.max++;
     }
 
     public void firstPass() {
@@ -83,7 +112,7 @@ public class APriori {
         String currentLine = "";
         FileReader retail = null;
         BufferedReader reader = null;
-        System.out.println(new File(this.fileName).getAbsolutePath() + this.fileName);
+        //System.out.println(new File(this.fileName).getAbsolutePath() + this.fileName);
         try {
 
             retail = new FileReader(this.fileName);
@@ -94,7 +123,8 @@ public class APriori {
         }
 
         try {
-            while ((currentLine = reader.readLine()) != null) {
+            while (((currentLine = reader.readLine()) != null) && this.max <= this.dataSet) {
+                this.incrementMax();
                 line = currentLine.split("\\s+");
                 for (String s: line) {
                     Integer key = Integer.parseInt(s);
@@ -111,6 +141,7 @@ public class APriori {
         }
         this.findFrequentValues();
         System.out.println(this.count.size());
+        this.resetMax();
     }
 
     public void findFrequentPairs() {
