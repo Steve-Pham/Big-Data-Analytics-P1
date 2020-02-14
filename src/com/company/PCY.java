@@ -104,7 +104,7 @@ public class PCY {
             e.printStackTrace();
         }
         this.findFrequentPairs();
-        System.out.println(this.frequentPairs.size());
+        System.out.println("Pairs: " + this.frequentPairs.size());
         long endTime = System.nanoTime();
 
         long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
@@ -181,7 +181,7 @@ public class PCY {
         this.buckets.clear();
 
         this.findFrequentValues();//seperates frequent items from the rest
-        System.out.println(this.count_items.size());//outputs number of items that appear >= threshold
+        System.out.println("Items: " + this.count_items.size());//outputs number of items that appear >= threshold
         this.resetMax();
 
     }

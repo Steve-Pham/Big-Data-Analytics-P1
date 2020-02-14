@@ -83,7 +83,7 @@ public class APriori {
             e.printStackTrace();
         }
         this.findFrequentPairs();
-        System.out.println(this.frequentPairs.size());
+        System.out.println("Pairs: " + this.frequentPairs.size());
         this.resetMax();
         long endTime = System.nanoTime();
 
@@ -140,7 +140,7 @@ public class APriori {
             e.printStackTrace();
         }
         this.findFrequentValues();
-        System.out.println(this.count.size());
+        System.out.println("Items: " + this.count.size());
         this.resetMax();
     }
 
